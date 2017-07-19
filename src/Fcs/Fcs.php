@@ -420,6 +420,10 @@ class Fcs {
     public function getAssetUriByEan($ean, $type, $price = "", $user = "") {
         return $this->send("GET", "asset-uris?ean=" . $ean . "&type=" . $type . "&price=" . $price . "&user=" . $user, null, null, false);
     }
+    
+    public function getAssetTypesByEan($ean) {
+        return $this->send("GET", "asset-types?ean=" . $ean, null, null, true);
+    }
 
     private function send($method, $uri, $root, $obj, $returnsXml = true) {
         $xml = '';
