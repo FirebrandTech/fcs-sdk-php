@@ -87,29 +87,6 @@ $uri = $fcs->getAssetUriByEan("9780306406157",      // EAN/ISBN13 of the book to
 header("Location: $uri");
 ```
 
-### Reader Access Token
-
-To get a Reader Access Token for forwarding to a specific Direct2Reader Site, do the following:
-
-```php
-<?php
-// Include the SDK along with you other project dependencies
-// using the Composer autoloader
-require 'vendor/autoload.php';
-
-use Fcs\Fcs;
-
-$fcs = new Fcs(array(
-    'url' => 'fcs-services-url',
-    'key' => 'your-fcs-access-key',
-    'secret' => 'your-fcs-access-secret'
-));
-
-$uri = $fcs->getUserLibraryUri(fcs-site-key, user-email);
-
-header("Location: $uri");
-```
-
 ### Asset Types
 The following is a list of the asset types that can be used in getAssetUriByEan.  Auto asset types are used if your account is configured to do Auto DRM conversion.  If conversion requests are made manually, the non Auto asset types are used instead.
 
