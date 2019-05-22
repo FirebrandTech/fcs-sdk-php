@@ -34,13 +34,14 @@ class AssetTypes {
     const Kindle = 'CLD_AT_Kindle';
     const PublisherKindle = 'CLD_AT_PublisherKindle';
     const Cover = 'CLD_AT_CoverArtHigh';
-    const TDrm = 'CLD_AT_TDrm'; // Temporary Protected - expires after 55 days
-    const TDrmEpub = 'CLD_AT_TDrmEpub'; // Temporary Protected EPUB - expires after 55 days
-    const TDrmPdf = 'CLD_AT_TDrmPdf'; // Temporary Protected Pdf - expires after 55 days
-    const PDrm = 'CLD_AT_PDrm'; // Permanent Protected
-    const PDrmEpub = 'CLD_AT_PDrmEpub'; // Permanent Protected EPUB
-    const PDrmPdf = 'CLD_AT_PDrmPdf'; // Permanent Protected Pdf
+    const TDrm = 'CLD_AT_TDrm'; // Temporary Protected (ACS) - expires after 55 days
+    const TDrmEpub = 'CLD_AT_TDrmEpub'; // Temporary Protected EPUB (ACS) - expires after 55 days
+    const TDrmPdf = 'CLD_AT_TDrmPdf'; // Temporary Protected PDF (ACS) - expires after 55 days
+    const PDrm = 'CLD_AT_PDrm'; // Permanent Protected (ACS)
+    const PDrmEpub = 'CLD_AT_PDrmEpub'; // Permanent Protected EPUB (ACS)
+    const PDrmPdf = 'CLD_AT_PDrmPdf'; // Permanent Protected PDF (ACS)
     const EDrmEpub = 'CLD_AT_EDrmEpub'; // Enthrill social DRMed EPUB
+    const PLcpDrmEpub = 'CLD_AT_LcpDrmEpub'; // Permanent Protected EPUB (LCP)
 }
 
 class ConversionStatuses {
@@ -382,6 +383,44 @@ class Fcs {
         $assets = $this->send("POST", "conversions", "conversion-filter", $filter);
         if (!array_key_exists('conversion', $assets)) return array();
         return $assets['conversion'];
+    }
+
+    // LCP APIs:
+
+    public function lcpGetContentId($productId) {
+        return $this->send("GET", "lcp/product/" . $productId . "/content", null, null, false);
+    }
+    public function lcpGetEncryptedContent($contentId) {
+        return $this->send("GET", "lcp/content/" . $contentId, null, null, false);
+    }
+    public function lcpGetLicensedContent($user, $contentId, $licenseId) {
+        // returns an EPUB file with the license.lcpl file embedded in it
+        return $this->send("POST", "lcp/content/" . $contentId . "/" . $licenseId, "user", $user, false);
+    }
+    public function lcpGetLicense($user, $licenseId) {
+        // returns the license.lcpl file
+        // The file content is JSON, so you can download or parse it.
+        return $this->send("POST", "lcp/license/" . $licenseId, "user", $user, false);
+    }
+    public function lcpGenerateLicense($user, $contentId) {
+        return $this->send("POST", "lcp/license/" . $contentId . "/generate", "user", $user, false);
+    }
+    public function lcpGetLicenseStatus($licenseId) {
+        return $this->send("GET", "lcp/license/" . $licenseId . "/status", null, null, false);
+    }
+    public function lcpRegisterDevice($licenseId, $deviceName) {
+        return $this->send("POST", "lcp/license/" . $licenseId . "/register?deviceName=" . $deviceName, null, null, false);
+    }
+    public function lcpRenewLicense($licenseId, $deviceName) {
+        return $this->send("PUT", "lcp/license/" . $licenseId . "/renew?deviceName=" . $deviceName, null, null, false);
+    }
+    public function lcpReturnLicense($licenseId, $deviceName) {
+        return $this->send("PUT", "lcp/license/" . $licenseId . "/return?deviceName=" . $deviceName, null, null, false);
+    }
+    public function lcpHashPassphrase($secret, $pass) {
+        $hash = hash_hmac("sha256", $pass, $secret, true);
+        $encoded = base64_encode($hash);
+        return $encoded;
     }
 
     public static function conversionIsApproved(array $conversion) {
