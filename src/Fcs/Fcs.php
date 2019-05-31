@@ -2,12 +2,13 @@
 
 namespace Fcs;
 
-use Guzzle\Http\Client;
-use Guzzle\Http\Exception\BadResponseException;
 use DOMNode;
 use DOMDocument;
-use Guzzle\Http\Message\Response;
 use ErrorException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
 
 /*
 function fcsDisplayArray($arrayname, $tab = "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp", $indent = 0) {
@@ -436,28 +437,33 @@ class Fcs {
             $this->reKey($obj);
             $xml = self::arrayToXMLString($obj, $root, $root == 'asset-filter' ? self::MODEL_NAMESPACE : self::CLD_NAMESPACE);
         }
-        //$fullUri = rtrim($this->_baseUri, '/') . '/' . $uri;
+
         $uriParts = explode('?', $uri);
-        $client = new Client($this->_baseUri);
+        $client = new Client(array('base_uri' => rtrim($this->_baseUri, '/') . '/'));
+
         $req = null;
         $authorization = $this->getAuthorize($method, $uriParts[0]);
         if ($obj) {
-            $req = $client->createRequest($method,
-                                          $uri,
-                                          array('Authorization' => $authorization,
-                                                "Content-Type" => "application/xml; charset=utf-8"),
-                                          $xml);
+            $req = new Request(
+                $method,
+                new Uri($uri),
+                array('Authorization' => $authorization,
+                      "Content-Type" => "application/xml; charset=utf-8"),
+                $xml
+            );
         }
         else {
-            $req = $client->createRequest($method,
-                                          $uri,
-                                          array('Authorization' => $authorization));
+            $req = new Request(
+                $method,
+                new Uri($uri),
+                array('Authorization' => $authorization)
+            );
         }
 
-        self::debug("FCS Sending Request: " . $req->getUrl() . self::NEWLINE . $xml);
+        self::debug("FCS Sending Request: " . (string)$req->getUri() . self::NEWLINE . $xml);
         /** @var Response $resp */
         try {
-            $resp = $req->send();
+            $resp = $client->send($req);
         }
         catch (BadResponseException $e) {
             throw self::error("FCS Send Error: $e");
@@ -524,7 +530,6 @@ class Fcs {
         curl_setopt($http, CURLOPT_LOW_SPEED_LIMIT, 1024);
         curl_setopt($http, CURLOPT_LOW_SPEED_TIME, 120);
         curl_setopt($http, CURLOPT_READFUNCTION, array($stream, "read"));
-        curl_setopt($http, CURLOPT_CLOSEPOLICY, CURLCLOSEPOLICY_LEAST_RECENTLY_USED);
         curl_setopt($http, CURLOPT_URL, $fullUri);
         curl_setopt($http, CURLOPT_UPLOAD, true);
         curl_setopt($http, CURLOPT_PUT, true);
