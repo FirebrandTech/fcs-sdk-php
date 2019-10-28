@@ -418,8 +418,8 @@ class Fcs {
     public function lcpReturnLicense($licenseId, $deviceName) {
         return $this->send("PUT", "lcp/license/" . $licenseId . "/return?deviceName=" . $deviceName, null, null, false);
     }
-    public function lcpHashPassphrase($secret, $pass) {
-        $hash = hash_hmac("sha256", $pass, $secret, true);
+    public function lcpHashPassphrase($pass) {
+        $hash = hash_hmac("sha256", $pass, true);
         $encoded = base64_encode($hash);
         return $encoded;
     }
@@ -460,7 +460,7 @@ class Fcs {
     public function getAssetUriByEan($ean, $type, $price = "", $user = "") {
         return $this->send("GET", "asset-uris?ean=" . $ean . "&type=" . $type . "&price=" . $price . "&user=" . $user, null, null, false);
     }
-    
+
     public function getAssetTypesByEan($ean) {
         return $this->send("GET", "asset-types?ean=" . $ean, null, null, true);
     }
