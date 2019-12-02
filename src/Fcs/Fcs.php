@@ -419,7 +419,7 @@ class Fcs {
         return $this->send("PUT", "lcp/license/" . $licenseId . "/return?deviceName=" . $deviceName, null, null, false);
     }
     public function lcpHashPassphrase($pass) {
-        $hash = hash_hmac("sha256", $pass, "", true);
+        $hash = hash("sha256", $pass, true);
         $encoded = base64_encode($hash);
         return $encoded;
     }
