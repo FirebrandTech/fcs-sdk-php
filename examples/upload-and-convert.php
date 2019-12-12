@@ -33,12 +33,12 @@ $product = $fcs->putProduct($product);
 
 // Upload the ePub
 echo "Upload the ePub...\n";
-$epub = $fcs->uploadAsset($product, 'tests/testfiles/monteCristo.epub');
+$epub = $fcs->uploadAsset($product, 'examples/testfiles/monteCristo.epub');
 $epubId = $epub['id'];
 
 // Upload the Cover image
 echo "Upload the Cover...\n";
-$cover = $fcs->uploadAsset($product, 'tests/testfiles/monteCristo.jpg');
+$cover = $fcs->uploadAsset($product, 'examples/testfiles/monteCristo.jpg');
 $coverId = $cover['id'];
 
 // Request conversion from ePub to Temporary Protected (DRM) format
