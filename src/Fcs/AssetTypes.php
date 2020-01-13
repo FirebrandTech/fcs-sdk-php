@@ -17,4 +17,6 @@ class AssetTypes
     const PDrmPdf = 'CLD_AT_PDrmPdf'; // Permanent Protected PDF (ACS)
     const EDrmEpub = 'CLD_AT_EDrmEpub'; // Enthrill social DRMed EPUB
     const PLcpDrmEpub = 'CLD_AT_LcpDrmEpub'; // Permanent Protected EPUB (LCP)
+    const Mp3Full = 'CLD_AT_AudioMP3';
+    const Mp3Excerpt = 'CLD_AT_Sample_MP3';
 }
