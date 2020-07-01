@@ -390,19 +390,19 @@ class Fcs
         return $this->send('GET', 'lcp/license/' . $licenseId . '/status', null, null, false);
     }
 
-    public function lcpRegisterDevice($licenseId, $deviceName)
+    public function lcpRegisterDevice($licenseId, $deviceId, $deviceName)
     {
-        return $this->send('POST', 'lcp/license/' . $licenseId . '/register?deviceName=' . $deviceName, null, null, false);
+        return $this->send('POST', 'lcp/licenses/' . $licenseId . '/register?id=' . $deviceId . '&name=' . $deviceName, null, null, false);
     }
 
-    public function lcpRenewLicense($licenseId, $deviceName)
+    public function lcpRenewLicense($licenseId, $deviceId, $deviceName, $end = null)
     {
-        return $this->send('PUT', 'lcp/license/' . $licenseId . '/renew?deviceName=' . $deviceName, null, null, false);
+        return $this->send('PUT', 'lcp/licenses/' . $licenseId . '/renew?id=' . $deviceId . '&name=' . $deviceName . ($end ? '&end=' . $end : ''), null, null, false);
     }
 
-    public function lcpReturnLicense($licenseId, $deviceName)
+    public function lcpReturnLicense($licenseId, $deviceId, $deviceName)
     {
-        return $this->send('PUT', 'lcp/license/' . $licenseId . '/return?deviceName=' . $deviceName, null, null, false);
+        return $this->send('PUT', 'lcp/licenses/' . $licenseId . '/return?id=' . $deviceId . '&name=' . $deviceName, null, null, false);
     }
 
     public function lcpHashPassphrase($pass)
