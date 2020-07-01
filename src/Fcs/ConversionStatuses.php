@@ -12,4 +12,6 @@ class ConversionStatuses
     const Canceled = 'CLD_CS_Canceled';
     const Failed = 'CLD_CS_Failed';
     const Error = 'CLD_CS_Error';
+    const Converting = 'CLD_CS_Converting';
+    const Queued = 'CLD_CS_Queued';
 }
