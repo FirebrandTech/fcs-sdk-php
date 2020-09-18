@@ -357,9 +357,9 @@ class Fcs
 
     // LCP APIs:
 
-    public function lcpGetContentId($productId)
+    public function lcpGetContentId($productId, $assetType = null)
     {
-        return $this->send('GET', 'lcp/product/' . $productId . '/content', null, null, false);
+        return $this->send('GET', 'lcp/product/' . $productId . '/content' . ($assetType ? '?assettype=' . $assetType : ''), null, null, false);
     }
 
     public function lcpGetEncryptedContent($contentId)
