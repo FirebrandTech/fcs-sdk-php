@@ -109,10 +109,8 @@ Asset Type|Description
 **"pdrm"**|Permanently Protected (Adobe DRM) asset (EPUB if it exists; PDF otherwise).  Manually converted.
 **"enthrillepub"**|Enthrill (Social DRM) EPUB.  Manually converted.
 **"enthrillpdf"**|Enthrill (Social DRM) PDF.  Manually converted.
-**"enthrillmobi"**|Enthrill (Social DRM) Mobi.  Manually converted.
 **"enthrillepubauto"**|Enthrill (Social DRM) EPUB. Auto Converted.
 **"enthrillpdfauto"**|Enthrill (Social DRM) PDF. Auto Converted.
-**"enthrillmobiauto"**|Enthrill (Social DRM) Mobi. Auto Converted.
 **"ancillaryzip"**|Unprotected zip file that is associated with a title but ancillary to it.
 **"ancillarypdf"**|Unprotected PDF file that is associated with a title but ancillary to it.
 **"ancillarypdrmpdf"**|Permanently Protected (Adobe DRM) PDF that is associated with a title but ancillary to it.  Auto converted.
