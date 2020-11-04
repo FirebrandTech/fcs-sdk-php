@@ -23,4 +23,5 @@ class AssetTypes
     const Mp3Excerpt = 'CLD_AT_Sample_MP3';
     const FullAudio = 'CLD_AT_W3CFullAudioZip';
     const IndexedAudio = 'CLD_AT_ZipMP3WithManifest';
+    const StreamingAudio = 'CLD_AT_StrmblAudioBook';
 }
