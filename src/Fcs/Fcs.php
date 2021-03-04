@@ -454,6 +454,11 @@ class Fcs
         return $this->send('GET', 'asset-uris/' . $assetId . '?price=' . $price . '&user=' . $user, null, null, false);
     }
 
+    public function getAssetUriByIdAndTrack($assetId, $trackId, $price = '', $user = '')
+    {
+        return $this->send('GET', 'asset-uris-cf/' . $assetId . '/' . $trackId . '?price=' . $price . '&user=' . $user, null, null, false);
+    }
+
     public function getAssetUriByEan($ean, $type, $price = '', $user = '')
     {
         return $this->send('GET', 'asset-uris?ean=' . $ean . '&type=' . $type . '&price=' . $price . '&user=' . $user, null, null, false);
