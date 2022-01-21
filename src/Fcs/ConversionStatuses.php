@@ -14,4 +14,5 @@ class ConversionStatuses
     const Error = 'CLD_CS_Error';
     const Converting = 'CLD_CS_Converting';
     const Queued = 'CLD_CS_Queued';
+    const Retry = 'CLD_CS_Retry';
 }
