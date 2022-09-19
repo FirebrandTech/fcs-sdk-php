@@ -5,6 +5,7 @@ namespace Fcs;
 class AssetTypes
 {
     const Epub = 'CLD_AT_Epub';
+    const EpubExcerpt = 'CLD_AT_SnippyExcerptEpub'; // Epub Excerpt
     const Pdf = 'CLD_AT_WebPdf';
     const Kindle = 'CLD_AT_Kindle';
     const PublisherKindle = 'CLD_AT_PublisherKindle';
