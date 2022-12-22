@@ -702,6 +702,10 @@ class Fcs
 
     private static function xmlEntities($string)
     {
+        if (empty($string)) {
+
+            return '';
+        }
         return str_replace(['&', '<', '>', '"', "'"],
                            ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'], $string);
     }
