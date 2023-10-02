@@ -251,7 +251,7 @@ class Fcs
         $accessSecret = self::getArrayValue($config, 'secret');
         $chunkSize = self::getArrayValue($config, 'chunkSize');
         $uploadAttempts = self::getArrayValue($config, 'uploadAttempts');
-        $uploadRetryDelay = self::getArrayValue($config, 'uploadRetryDelay');
+        $uploadRetryDelay = self::getArrayValue($config, 'uploadRetryDelay'); // in milliseconds
 
         if (!$servicesUrl || !$accessKey || !$accessSecret) {
             throw self::error('FCS Client Error: One or all of the following parameters are invalid: ' . 'servicesUrl, accessKey, accessSecret.');
@@ -267,7 +267,7 @@ class Fcs
         }
 
         if (!$uploadRetryDelay) {
-            $uploadRetryDelay = 1000;
+            $uploadRetryDelay = 1000; // 1000 ms, which is 1 second
         }
 
         $this->_baseUri = rtrim($servicesUrl, '/');
@@ -591,7 +591,7 @@ class Fcs
                     if ($this->_uploadAttemptsRemaining <= 0) {
                         throw $e;
                     } else {
-                        sleep($this->_uploadRetryDelay);
+                        usleep($this->_uploadRetryDelay * 1000); // usleep accepts MICRO seconds, but uploadRetryDelay is in MILLI seconds, so convert
                     }
                 }
             }
