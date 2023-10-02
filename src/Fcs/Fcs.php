@@ -859,7 +859,7 @@ class Fcs
         if (self::isDebugging()) {
             date_default_timezone_set('America/New_York');
             $dt = date('c');
-            $formattedMsg = sprintf('[%s] %s%s', $dt, $msg, self :: NEWLINE);
+            $formattedMsg = sprintf('[%s] %s%s', $dt, $msg, self::NEWLINE);
             if (self::debugFilePath()) {
                 self::writeToFile($formattedMsg);
             }
