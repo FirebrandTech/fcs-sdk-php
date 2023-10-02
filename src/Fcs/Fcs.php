@@ -579,8 +579,8 @@ class Fcs
             $isLastChunk = ($chunk == ($chunks - 1));
             $chunkSize = $isLastChunk ? $lastChunkSize : $this->_chunkSize;
             $chunkQuery = "name=$fileName&chunk=$chunk&chunks=$chunks";
-            self::debug("Sending Chunk isLastChunk=$isLastChunk, lastChunkSize=$lastChunkSize, chunkSize=$chunkSize, chunk=$chunk, chunks=$chunks, uploadAttemptsRemaining=" . $this->_uploadAttemptsRemaining);
             while ($this->_uploadAttemptsRemaining > 0) {
+                self::debug("Sending Chunk isLastChunk=$isLastChunk, lastChunkSize=$lastChunkSize, chunkSize=$chunkSize, chunk=$chunk, chunks=$chunks, uploadAttemptsRemaining=" . $this->_uploadAttemptsRemaining);
                 try {
                     $this->sendChunk($uri, $chunkQuery, $path, $contentType, $bytesSent, $chunkSize);
                     $bytesSent += $chunkSize;
