@@ -12,7 +12,8 @@
         "php": ">=5.4",
         "guzzlehttp/guzzle": "^7.4",
         "ext-curl": "*",
-        "ext-dom": "*"
+        "ext-dom": "*",
+      "ext-json": "*"
     },
     "autoload": {
         "psr-0": {
