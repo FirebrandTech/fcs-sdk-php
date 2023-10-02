@@ -12,7 +12,6 @@ use GuzzleHttp\Psr7\Uri;
 
 class Fcs
 {
-    const CHUNK_SIZE = 1048576; // 1 MB
     const ATTRIBUTES = '__attributes__';
     const CONTENT = '__content__';
     const NEWLINE = "\n";
@@ -254,7 +253,7 @@ class Fcs
         }
 
         if (!$chunkSize) {
-            $chunkSize = 1048576; // 1 MB
+            $chunkSize = 10485760; // 10 MB
         }
 
         $this->_baseUri = rtrim($servicesUrl, '/');
