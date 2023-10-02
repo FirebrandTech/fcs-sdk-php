@@ -72,7 +72,10 @@ use Fcs\AssetTypes;
 $fcs = new Fcs(array(
     'url' => 'fcs-services-url',
     'key' => 'your-fcs-access-key',
-    'secret' => 'your-fcs-access-secret'
+    'secret' => 'your-fcs-access-secret',
+    // chunkSize is optional. When uploading a file, sets how many bytes are sent at a time. 
+    // The default is 1048576, which is 1 MB.
+    'chunkSize' => 1048576, 
 ));
 
 $uri = $fcs->getAssetUriByEan("9780306406157",      // EAN/ISBN13 of the book to download

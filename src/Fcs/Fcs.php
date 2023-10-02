@@ -224,6 +224,7 @@ class Fcs
     private $_basePath;
     private $_accessKey;
     private $_accessSecret;
+    private $_chunkSize;
     private $_userName;
 
     public static function configure($config)
@@ -246,9 +247,14 @@ class Fcs
         $servicesUrl = self::getArrayValue($config, 'url');
         $accessKey = self::getArrayValue($config, 'key');
         $accessSecret = self::getArrayValue($config, 'secret');
+        $chunkSize = self::getArrayValue($config, 'chunkSize');
 
         if (!$servicesUrl || !$accessKey || !$accessSecret) {
             throw self::error('FCS Client Error: One or all of the following parameters are invalid: ' . 'servicesUrl, accessKey, accessSecret.');
+        }
+
+        if (!$chunkSize) {
+            $chunkSize = 1048576; // 1 MB
         }
 
         $this->_baseUri = rtrim($servicesUrl, '/');
@@ -257,6 +263,7 @@ class Fcs
         self::debug('FCS Client: basePath=' . $this->_basePath);
         $this->_accessKey = $accessKey;
         $this->_accessSecret = $accessSecret;
+        $this->_chunkSize = $chunkSize;
         $this->_userName = 'PHPSDK';
     }
 
@@ -546,12 +553,12 @@ class Fcs
         if ($size <= 0) {
             throw self::error("FCS Send Error: $path is empty");
         }
-        $chunks = ceil($size / self::CHUNK_SIZE);
-        $lastChunkSize = $size % self::CHUNK_SIZE;
+        $chunks = ceil($size / $this->_chunkSize);
+        $lastChunkSize = $size % $this->_chunkSize;
         $bytesSent = 0;
         for ($chunk = 0; $chunk < $chunks; $chunk++) {
             $isLastChunk = ($chunk == ($chunks - 1));
-            $chunkSize = $isLastChunk ? $lastChunkSize : self::CHUNK_SIZE;
+            $chunkSize = $isLastChunk ? $lastChunkSize : $this->_chunkSize;
             $chunkQuery = "name=$fileName&chunk=$chunk&chunks=$chunks";
             self::debug("Sending Chunk isLastChunk=$isLastChunk, lastChunkSize=$lastChunkSize, chunkSize=$chunkSize, chunk=$chunk, chunks=$chunks");
             $this->sendChunk($uri, $chunkQuery, $path, $contentType, $bytesSent, $chunkSize);
