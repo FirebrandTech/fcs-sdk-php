@@ -589,7 +589,7 @@ class Fcs
                     // Sending this chunk failed.  If retries remain, wait, then try sending it again.
                     $this->_uploadAttemptsRemaining--;
                     if ($this->_uploadAttemptsRemaining <= 0) {
-                        throw $e;
+                        throw self::error("FCS Send Error: failed to send chunk $chunk of $path after $this->_uploadAttempts attempts");
                     } else {
                         usleep($this->_uploadRetryDelay * 1000); // usleep accepts MICRO seconds, but uploadRetryDelay is in MILLI seconds, so convert
                     }
