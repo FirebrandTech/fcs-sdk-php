@@ -585,7 +585,7 @@ class Fcs
                     $this->sendChunk($uri, $chunkQuery, $path, $contentType, $bytesSent, $chunkSize);
                     $bytesSent += $chunkSize;
                     break; // get out of the while loop
-                } catch (BadResponseException $e) {
+                } catch (ErrorException $e) {
                     // Sending this chunk failed.  If retries remain, wait, then try sending it again.
                     $this->_uploadAttemptsRemaining--;
                     if ($this->_uploadAttemptsRemaining <= 0) {
