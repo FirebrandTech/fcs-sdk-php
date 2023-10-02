@@ -224,6 +224,9 @@ class Fcs
     private $_accessKey;
     private $_accessSecret;
     private $_chunkSize;
+    private $_uploadAttempts; // how many times to attempt sending a chunk before giving up
+    private $_uploadRetryDelay; // how long to wait after a failed chunk before trying again
+    private $_uploadAttemptsRemaining; // track remaining attempts for the current chunk
     private $_userName;
 
     public static function configure($config)
@@ -247,13 +250,24 @@ class Fcs
         $accessKey = self::getArrayValue($config, 'key');
         $accessSecret = self::getArrayValue($config, 'secret');
         $chunkSize = self::getArrayValue($config, 'chunkSize');
+        $uploadAttempts = self::getArrayValue($config, 'uploadAttempts');
+        $uploadRetryDelay = self::getArrayValue($config, 'uploadRetryDelay'); // in milliseconds
 
         if (!$servicesUrl || !$accessKey || !$accessSecret) {
             throw self::error('FCS Client Error: One or all of the following parameters are invalid: ' . 'servicesUrl, accessKey, accessSecret.');
         }
 
+        // defaults
         if (!$chunkSize) {
-            $chunkSize = 10485760; // 10 MB
+            $chunkSize = 10485760; // 1024*1024*10 = 10485760 == 10 MB
+        }
+
+        if (!$uploadAttempts) {
+            $uploadAttempts = 3;
+        }
+
+        if (!$uploadRetryDelay) {
+            $uploadRetryDelay = 1000; // 1000 ms, which is 1 second
         }
 
         $this->_baseUri = rtrim($servicesUrl, '/');
@@ -263,6 +277,8 @@ class Fcs
         $this->_accessKey = $accessKey;
         $this->_accessSecret = $accessSecret;
         $this->_chunkSize = $chunkSize;
+        $this->_uploadAttempts = $uploadAttempts;
+        $this->_uploadRetryDelay = $uploadRetryDelay;
         $this->_userName = 'PHPSDK';
     }
 
@@ -556,12 +572,29 @@ class Fcs
         $lastChunkSize = $size % $this->_chunkSize;
         $bytesSent = 0;
         for ($chunk = 0; $chunk < $chunks; $chunk++) {
+
+            // Every chunk gets up to _uploadAttempts attempts
+            $this->_uploadAttemptsRemaining = $this->_uploadAttempts;
+
             $isLastChunk = ($chunk == ($chunks - 1));
             $chunkSize = $isLastChunk ? $lastChunkSize : $this->_chunkSize;
             $chunkQuery = "name=$fileName&chunk=$chunk&chunks=$chunks";
-            self::debug("Sending Chunk isLastChunk=$isLastChunk, lastChunkSize=$lastChunkSize, chunkSize=$chunkSize, chunk=$chunk, chunks=$chunks");
-            $this->sendChunk($uri, $chunkQuery, $path, $contentType, $bytesSent, $chunkSize);
-            $bytesSent += $chunkSize;
+            while ($this->_uploadAttemptsRemaining > 0) {
+                self::debug("Sending Chunk isLastChunk=$isLastChunk, lastChunkSize=$lastChunkSize, chunkSize=$chunkSize, chunk=$chunk, chunks=$chunks, uploadAttemptsRemaining=" . $this->_uploadAttemptsRemaining);
+                try {
+                    $this->sendChunk($uri, $chunkQuery, $path, $contentType, $bytesSent, $chunkSize);
+                    $bytesSent += $chunkSize;
+                    break; // get out of the while loop
+                } catch (ErrorException $e) {
+                    // Sending this chunk failed.  If retries remain, wait, then try sending it again.
+                    $this->_uploadAttemptsRemaining--;
+                    if ($this->_uploadAttemptsRemaining <= 0) {
+                        throw self::error("FCS Send Error: failed to send chunk $chunk of $path after $this->_uploadAttempts attempts");
+                    } else {
+                        usleep($this->_uploadRetryDelay * 1000); // usleep accepts MICRO seconds, but uploadRetryDelay is in MILLI seconds, so convert
+                    }
+                }
+            }
         }
     }
 
@@ -826,7 +859,7 @@ class Fcs
         if (self::isDebugging()) {
             date_default_timezone_set('America/New_York');
             $dt = date('c');
-            $formattedMsg = sprintf('[%s] %s%s', $dt, $msg, self :: NEWLINE);
+            $formattedMsg = sprintf('[%s] %s%s', $dt, $msg, self::NEWLINE);
             if (self::debugFilePath()) {
                 self::writeToFile($formattedMsg);
             }

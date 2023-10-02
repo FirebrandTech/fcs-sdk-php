@@ -4,7 +4,7 @@ The FCS SDK for PHP enables PHP developers to build solutions with Firebrand Clo
 With the FCS SDK for PHP, developers can get started in minutes by using [Composer](http://getcomposer.org).
 
 This new version is built on top of [Guzzle](http://guzzlephp.org), a PHP HTTP client
-framework, which provides increased performance.  The FCS SDK for PHP requires PHP 5.3.2.
+framework, which provides increased performance.  The FCS SDK for PHP requires PHP 5.4.
 
 ## Before Using the SDK
 
