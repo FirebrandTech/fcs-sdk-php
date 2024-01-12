@@ -309,6 +309,12 @@ class Fcs
         return $this->send('GET', 'assets/' . $assetId, 'asset', null);
     }
 
+    public function postS3AssetPath($assetId, $s3Uri)
+    {
+        // $s3uri should look something like this:
+        // https://some-bucket-name.s3.amazonaws.com/path/to/some-asset.epub
+        return $this->send('POST', 'copy-s3-asset/' . $assetId . '?s3uri=' . $s3Uri, null, null, false);
+    }
     public function uploadAsset(array $product, $assetPath, $assetType = null)
     {
         self::info("FCS Uploading $assetPath");
