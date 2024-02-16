@@ -321,7 +321,7 @@ class Fcs
         self::info("FCS Uploading $assetPath");
         $pathInfo = pathinfo($assetPath);
         $ext = strtolower($pathInfo['extension']);
-        $fileName = $pathInfo['basename'];
+
         $contentType = self::$_mimeTypes[$ext];
 
         if ($assetType == null) {
@@ -342,6 +342,11 @@ class Fcs
     public function uploadAsset(array $product, $assetPath, $assetType = null)
     {
         $asset = $this->putAsset($product, $assetPath, $assetType);
+
+        $pathInfo = pathinfo($assetPath);
+        $fileName = $pathInfo['basename'];
+        $ext = strtolower($pathInfo['extension']);
+        $contentType = self::$_mimeTypes[$ext];
 
         $this->sendFile('asset-files/' . $asset['id'], $assetPath, $fileName, $contentType);
 
