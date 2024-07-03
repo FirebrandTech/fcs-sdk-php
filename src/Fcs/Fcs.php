@@ -315,12 +315,13 @@ class Fcs
         // https://some-bucket-name.s3.amazonaws.com/path/to/some-asset.epub
         return $this->send('POST', 'copy-s3-asset/' . $assetId . '?s3uri=' . $s3Uri, null, null, false);
     }
-    public function uploadAsset(array $product, $assetPath, $assetType = null)
+
+    public function putAsset(array $product, $assetPath, $assetType = null)
     {
         self::info("FCS Uploading $assetPath");
         $pathInfo = pathinfo($assetPath);
         $ext = strtolower($pathInfo['extension']);
-        $fileName = $pathInfo['basename'];
+
         $contentType = self::$_mimeTypes[$ext];
 
         if ($assetType == null) {
@@ -335,9 +336,28 @@ class Fcs
                        'generated-file-name' => $pathInfo['basename'],
                        'content-type' => $contentType];
 
-        $asset = $this->send('PUT', 'assets', 'asset', $asset);
+        return $this->send('PUT', 'assets', 'asset', $asset);
+    }
+
+    public function uploadAsset(array $product, $assetPath, $assetType = null)
+    {
+        $asset = $this->putAsset($product, $assetPath, $assetType);
+
+        $pathInfo = pathinfo($assetPath);
+        $fileName = $pathInfo['basename'];
+        $ext = strtolower($pathInfo['extension']);
+        $contentType = self::$_mimeTypes[$ext];
 
         $this->sendFile('asset-files/' . $asset['id'], $assetPath, $fileName, $contentType);
+
+        return $asset;
+    }
+
+    public function transferS3Asset(array $product, $s3Uri, $assetType = null)
+    {
+        $asset = $this->putAsset($product, $s3Uri, $assetType);
+
+        $this->postS3AssetPath($asset['id'], $s3Uri);
 
         return $asset;
     }
